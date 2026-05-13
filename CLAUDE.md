@@ -9,6 +9,10 @@
 - CRITICAL: {절대 지켜야 할 규칙 1 (예: 모든 API 로직은 app/api/ 라우트 핸들러에서만 처리)}
 - CRITICAL: {절대 지켜야 할 규칙 2 (예: 클라이언트 컴포넌트에서 직접 외부 API를 호출하지 말 것)}
 - {일반 규칙 (예: 컴포넌트는 components/ 폴더에, 타입은 types/ 폴더에 분리)}
+- 컨트롤러 public 매핑 메서드는 `@Operation(summary, description)` 필수. 파라미터에 `@Parameter(description)` 필수
+- 주석은 한글로 작성한다
+- 주요 로직 흐름에서 큰 단계별로 한 줄 한글 주석을 남긴다. 코드를 그대로 옮겨 적는 주석은 금지
+- `@Autowired` 필드 주입 금지, 생성자 주입만 허용. 생성자는 `@RequiredArgsConstructor` 우선 사용
 
 ## 개발 프로세스
 - CRITICAL: 새 기능 구현 시 반드시 테스트를 먼저 작성하고, 테스트가 통과하는 구현을 작성할 것 (TDD)

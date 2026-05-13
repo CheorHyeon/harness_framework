@@ -26,13 +26,46 @@
 
 | # | 규칙 | 설명 |
 |---|---|---|
-| 1 | 예외 클래스 | `..exception..` 패키지의 모든 예외는 `ApplicationException` 상속 필수 |
-| 2 | 컨트롤러 반환 타입 | `@GetMapping` 등 매핑 메서드는 `ResponseDTO<T>` 또는 `ResponseEntity<ResponseDTO<T>>` 반환 필수 |
-| 3 | Swagger 어노테이션 | 컨트롤러 public 매핑 메서드는 `@Operation` 필수 |
-| 4 | DTO `@Schema` | `io.travelesim.domain..dto..` 패키지 클래스는 `@Schema` 필수 (클래스 레벨 또는 모든 필드) |
-| 5 | `@RequestMapping` 경로 | 컨트롤러 경로는 `/api/v1`, `/api/v2`, `/api/v3`, `/api/test` 중 하나로 시작 필수 |
-| 6 | 테스트 API 프로파일 | `/api/test` 사용 시 `@Profile({"dev", "local"})` 필수 |
-| 7 | `log.error()` 호출 | `GlobalExceptionRestAdvice` 제외, `log.error()` 호출 시 `ExceptionLogPrefix` enum 참조 필수 |
+| 1 | 컨트롤러 반환 타입 | 컨트롤러 매핑 메서드는 `ResponseEntity<T>` 반환 필수 (void인 경우 `ResponseEntity<Void>`) |
+| 2 | Swagger 어노테이션 | 컨트롤러 public 매핑 메서드는 `@Operation(summary, description)` 필수. 파라미터에 `@Parameter(description)` 필수 |
+| 3 | DTO `@Schema` | DTO 필드에 `@Schema(description = "한글 설명", example = "예시값")` 필수. description은 한글로 작성 |
+| 4 | `@RequestMapping` 경로 | 컨트롤러 경로는 `/api/v1`, `/api/v2`, `/api/v3` 중 하나로 시작 필수 |
+| 5 | 레이어 의존성 방향 | `Controller → Service → Repository` 단방향만 허용. 역방향 의존 금지 |
+| 6 | 클래스 네이밍 접미사 | Controller/Service/Repository 클래스는 각각 해당 접미사 필수 |
+| 7 | 필드 주입 금지 | `@Autowired` 필드 주입 금지, 생성자 주입만 허용. 생성자는 `@RequiredArgsConstructor` 우선 사용 |
+
+---
+
+## 3. 주석 컨벤션
+
+- 주석은 한글로 작성한다.
+- 주요 로직 흐름에서 큰 단계별로 한 줄 주석을 남긴다. 코드를 그대로 옮겨 적는 주석은 금지.
+
+**좋은 예:**
+```java
+public PostListResponse getPosts(Long cursor, int size) {
+    // size 보정 (1~50 범위)
+    int correctedSize = correctSize(size);
+
+    // 게시글 목록 조회 (size+1개로 다음 페이지 존재 여부 판단)
+    List<Post> posts = fetchPosts(cursor, correctedSize);
+
+    // 배치 조회로 연관 데이터 로드
+    List<Long> postIds = posts.stream().map(Post::getId).toList();
+    Map<Long, List<Comment>> commentMap = commentRepository.findByPostIds(postIds);
+
+    // 응답 DTO 조합
+    return PostListResponse.of(posts, commentMap, correctedSize);
+}
+```
+
+**나쁜 예:**
+```java
+// correctedSize에 correctSize 결과를 할당한다
+int correctedSize = correctSize(size);
+// posts 변수에 fetchPosts 결과를 넣는다
+List<Post> posts = fetchPosts(cursor, correctedSize);
+```
 
 ---
 
