@@ -36,10 +36,39 @@
 
 ---
 
-## 3. 주석 컨벤션
+## 3. 코드 작성 규칙
 
-- 주석은 한글로 작성한다.
-- 주요 로직 흐름에서 큰 단계별로 한 줄 주석을 남긴다. 코드를 그대로 옮겨 적는 주석은 금지.
+- CRITICAL: `@Autowired` 필드 주입 금지 — 생성자 주입만 허용하며, `@RequiredArgsConstructor` 우선 사용
+- CRITICAL: 컨트롤러 public 매핑 메서드에 `@Operation(summary, description)` 필수, 파라미터에 `@Parameter(description)` 필수
+- 주석은 한글로 작성한다
+- 주요 로직 흐름에서 큰 단계별로 한 줄 한글 주석을 남긴다. 코드를 그대로 옮겨 적는 주석은 금지
+
+### API 응답 변경 시 스웨거 업데이트
+
+기존 API의 응답 필드가 추가되거나 의미가 변경되면, 해당 컨트롤러 메서드의 `@Operation(description)`에 변경 내용을 명시한다. FO 개발자가 스웨거만 보고 파악할 수 있어야 한다.
+
+### @Operation description 작성
+
+`@Operation(description = ...)`이 여러 줄이거나 줄바꿈/마크다운을 포함하면 **Java text block(`"""..."""`)**을 사용한다. 문자열 연결(`"..." + "\n\n" + "..."`) 금지 — 가독성과 스웨거 렌더링 일관성 확보 목적.
+
+```java
+@Operation(summary = "게시글 목록 조회", description = """
+    카테고리별 게시글 목록을 조회합니다.
+
+    ### [응답 필드]
+    - `commentCount` — 게시글별 댓글 수
+    - `pinned` (nullable) — 고정 게시글 여부, 일반 게시글이면 null
+    """)
+@GetMapping("/posts")
+public ResponseEntity<ResponseDTO<PostListResponse>> getPosts(
+        @Parameter(description = "카테고리 ID") @RequestParam Long categoryId,
+        @Parameter(description = "페이지 커서") @RequestParam(required = false) Long cursor,
+        @Parameter(description = "페이지 크기") @RequestParam(defaultValue = "20") int size) {
+    ...
+}
+```
+
+### 주석 컨벤션
 
 **좋은 예:**
 ```java
