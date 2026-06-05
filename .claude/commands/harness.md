@@ -164,14 +164,17 @@ Agent 툴로 실행하라:
 - **description**: `"Lint 에이전트 — {기능명} 포맷/아키텍처 규칙 검사"`
 - **model**: `sonnet`
 
-리팩토링이 완료된 최종 코드에 lint를 실행하는 에이전트를 실행하라.
+리팩토링이 완료된 최종 코드에 lint를 실행하는 에이전트를 실행하라. **이번 하네스에서 생성/변경한 파일만** 대상으로 한다.
 
-- `docs/CODE_RULES.md`의 "수동 실행 커맨드"를 읽고, **이번 하네스에서 생성/변경한 파일만** 검사한다.
-  - **Spotless**: 변경된 파일 경로를 `-PspotlessFiles`로 한정해 검사한다.
-    예: `./gradlew spotlessCheck -PspotlessFiles="src/main/java/.../FooService.java,..."`
-  - 프로젝트가 ArchUnit 등 추가 규칙을 CODE_RULES.md에 변경-파일-한정 커맨드로 정의해 뒀다면 그것도 함께 실행한다.
-- lint 실패 시 컨벤션에 맞게 수정한다(Spotless 위반은 `spotlessApply`로 자동 수정). **최대 2회.**
-- 로직 변경 금지. 스타일/컨벤션 수정만 허용.
+**(A) 도구 검사 — `docs/CODE_RULES.md`의 "수동 실행 커맨드"를 읽고 실행한다.**
+- **Spotless**: 변경된 파일 경로를 `-PspotlessFiles`로 한정해 검사한다.
+  예: `./gradlew spotlessCheck -PspotlessFiles="src/main/java/.../FooService.java,..."`
+- 프로젝트가 ArchUnit 등 추가 규칙을 CODE_RULES.md에 변경-파일-한정 커맨드로 정의해 뒀다면 그것도 함께 실행한다.
+- 실패 시 컨벤션에 맞게 수정한다(Spotless 위반은 `spotlessApply`로 자동 수정). **최대 2회.**
+
+**(B) 도구로 강제되지 않는 규칙 검토 — `docs/CODE_RULES.md`에 적혀 있지만 Spotless/ArchUnit으로 강제되지 않는 규칙들도 변경된 파일에 대해 직접 검토하고, 위반한 부분은 수정한다.** 이 규칙들은 빌드를 실패시키지 않으므로 도구 통과 여부와 무관하게 반드시 검토한다.
+
+**공통:** 로직 변경 금지. 주석·스웨거 문서·포맷 등 스타일/컨벤션 수정만 허용.
 
 ### 8. 완료 처리
 
