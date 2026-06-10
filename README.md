@@ -112,7 +112,7 @@ phases/
 포맷(Spotless) + 아키텍처(ArchUnit) 규칙을 검사하고 위반 항목을 안내합니다.
 규칙 상세는 `docs/CODE_RULES.md`를 참조하세요.
 
-> 하네스 파이프라인의 Lint 에이전트는 이번 실행에서 생성/변경한 파일만 검사합니다(Spotless `-PspotlessFiles`). 프로젝트에 ArchUnit 등 자체 포맷/아키텍처 규칙이 있다면 Claude에게 "이 규칙을 lint 단계에 추가해줘"라고 요청해, `docs/CODE_RULES.md`에 변경-파일-한정 커맨드로 등록해 두면 Lint 에이전트가 함께 실행합니다. 도구로 강제되지 않는 규칙(한글 주석 컨벤션, 스웨거 description 내용 등)은 Lint 에이전트가 `docs/CODE_RULES.md`를 기준으로 직접 검토하고 위반 시 수정합니다. 전체 코드베이스를 한 번에 검사하려면 `/lint`(`./gradlew validateCode`)를 직접 실행하세요.
+> 하네스 파이프라인의 Lint 에이전트는 이번 실행에서 생성/변경한 파일만 검사합니다(Spotless `-PspotlessFiles`). 프로젝트에 ArchUnit 등 자체 포맷/아키텍처 규칙이 있다면 Claude에게 "이 규칙을 lint 단계에 추가해줘"라고 요청해, `docs/CODE_RULES.md`에 변경-파일-한정 커맨드로 등록해 두면 Lint 에이전트가 함께 실행합니다. 도구로 강제되지 않는 규칙(한글 주석 컨벤션, 스웨거 description이 API 소비자 관점으로 쓰였는지·내부 구현 용어가 새어들지 않았는지 등)은 Lint 에이전트가 `docs/CODE_RULES.md`를 기준으로 직접 검토하고 위반 시 수정합니다. 전체 코드베이스를 한 번에 검사하려면 `/lint`(`./gradlew validateCode`)를 직접 실행하세요.
 
 ### `/ask {slug} {질문}`
 
