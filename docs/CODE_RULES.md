@@ -99,10 +99,10 @@ public PostListResponse getPosts(Long cursor, int size) {
 
     // 배치 조회로 연관 데이터 로드
     List<Long> postIds = posts.stream().map(Post::getId).toList();
-    Map<Long, List<Comment>> commentMap = commentRepository.findByPostIds(postIds);
+    Map<Long, List<Comment>> commentsByPostId = commentRepository.findByPostIds(postIds);
 
     // 응답 DTO 조합
-    return PostListResponse.of(posts, commentMap, correctedSize);
+    return PostListResponse.of(posts, commentsByPostId, correctedSize);
 }
 ```
 
@@ -132,7 +132,7 @@ List<Post> posts = fetchPosts(cursor, correctedSize);
 ./gradlew verificationTest
 
 # 특정 클래스만 아키텍처 검사
-./gradlew verificationPartial -Parchunit.includes="io.travelesim.domain.foo.controller.FooController"
+./gradlew verificationPartial -Parchunit.includes="com.example.domain.foo.controller.FooController"
 
 # 포맷 + 아키텍처 통합 검사
 ./gradlew validateCode
